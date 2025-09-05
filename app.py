@@ -72,7 +72,7 @@ def draw_boxes(image, preds, names):
 # === Routes ===
 @app.route('/')
 def welcome_page():
-    return render_template('welcome.html')
+    return render_template('index.html')
 
 @app.route('/upload')
 def upload_page():
