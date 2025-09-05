@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --normal-color: #34c759;
+        --abnormal-color: #ff3b30;
+        --background-color: #f0f2f5;
+        --card-color: #ffffff;
+        --text-color: #333;
+        --muted-text-color: #666;
+        --border-radius: 12px;
+        --button-color: #ff9500;
+    }
+
+    .main-container {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--background-color);
+        padding: 2rem;
+        max-width: 1000px;
+        margin: 2rem auto;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-container h2 {
+        text-align: center;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .left-column, .analysis-box {
+        background-color: var(--card-color);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        padding: 0.8rem;
+        background-color: var(--button-color);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+        background-color: #e68600;
+    }
+
+    .analysis-box h3 {
+        margin-top: 0;
+        font-weight: 600;
+        color: var(--text-color);
+        text-align: left;
+    }
+
+    .analysis-details {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .donut-chart {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: conic-gradient(
+            var(--abnormal-color) 0% var(--abnormal-percent, 0%),
+            var(--normal-color) var(--abnormal-percent, 0%) 100%
+        );
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .donut-chart::before {
+        content: '';
+        display: block;
+        width: 60%;
+        height: 60%;
+        border-radius: 50%;
+        background-color: var(--card-color);
+    }
+
+    .stats {
+        width: 100%;
+    }
+
+    .stats p {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .progress-legend {
+        height: 8px;
+        width: 100%;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+
+    .progress-legend.normal { background-color: var(--normal-color); }
+    .progress-legend.abnormal { background-color: var(--abnormal-color); }
+
+    .analysis-box > p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+
+    .info-box {
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 0.8rem;
+        font-size: 0.85rem;
+        color: var(--muted-text-color);
+    }
+
+    .info-box p {
+        margin: 0.3rem 0;
+    }
+
+    /* --- Carousel --- */
+    .carousel-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .carousel-image {
+        display: none;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .carousel-image.active {
+        display: block;
+    }
+
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+        background: rgba(0,0,0,0.4);
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .carousel-btn.prev { left: 5px; }
+    .carousel-btn.next { right: 5px; }
+
+    .carousel-btn:hover {
+        background: rgba(0,0,0,0.6);
+    }
+
+    /* Per image analysis */
+    .per-image-analysis { display: none; }
+    .per-image-analysis.active { display: block; }
+</style>
+
+<div class="main-container">
+    <h2>Result Analysis</h2>
+
+    {% if summary.abnormal_percentage is defined and summary.normal_percentage is defined %}
+        <div class="result-grid">
+            <!-- KIRI: Carousel -->
+            <div class="left-column">
+                <div class="carousel-container">
+                    {% for r in results %}
+                        <img src="{{ r.image_url }}" 
+                             class="carousel-image {% if loop.first %}active{% endif %}" 
+                             alt="{{ r.filename }}">
+                    {% endfor %}
+                    <button class="carousel-btn prev" onclick="prevImage()">&#10094;</button>
+                    <button class="carousel-btn next" onclick="nextImage()">&#10095;</button>
+                </div>
+            </div>
+
+            <!-- KANAN: Detail per gambar -->
+            <div>
+                {% for r in results %}
+                {% set abnormal_pct = (r.abnormal_count / r.total_count * 100) if r.total_count > 0 else 0 %}
+                {% set normal_pct   = (r.normal_count / r.total_count * 100) if r.total_count > 0 else 0 %}
+                {% set status = 'Abnormal' if abnormal_pct > 50 else 'Normal' %}
+                <div class="analysis-box per-image-analysis {% if loop.first %}active{% endif %}">
+                    <h3>Details Analysis ({{ r.filename }})</h3>
+                    <div class="analysis-details">
+                        <div class="donut-chart" style="--abnormal-percent: {{ abnormal_pct }}%;"></div>
+                        <div class="stats">
+                            <p><strong>Abnormal:</strong> {{ "%.2f"|format(abnormal_pct) }}%</p>
+                            <div class="progress-legend abnormal"></div>
+                            <br>
+                            <p><strong>Normal:</strong> {{ "%.2f"|format(normal_pct) }}%</p>
+                            <div class="progress-legend normal"></div>
+                        </div>
+                    </div>
+                    <p><strong>Status:</strong> {{ status }}</p>
+                    <p><strong>Total Sperm Detected:</strong> {{ r.total_count }}</p>
+                    <p><strong>Normal:</strong> {{ r.normal_count }} | <strong>Abnormal:</strong> {{ r.abnormal_count }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Analisis keseluruhan -->
+        <div class="analysis-box" style="margin-top:2rem;">
+            <h3>Details Analysis (Keseluruhan)</h3>
+            <div class="analysis-details">
+                <div class="donut-chart" style="--abnormal-percent: {{ summary.abnormal_percentage }}%;"></div>
+                <div class="stats">
+                    <p><strong>Abnormal:</strong> {{ "%.2f"|format(summary.abnormal_percentage) }}%</p>
+                    <div class="progress-legend abnormal"></div>
+                    <br>
+                    <p><strong>Normal:</strong> {{ "%.2f"|format(summary.normal_percentage) }}%</p>
+                    <div class="progress-legend normal"></div>
+                </div>
+            </div>
+            <p><strong>Status:</strong> {{ summary.status }}</p>
+            <p><strong>Total Sperm Detected:</strong> {{ summary.total_count }}</p>
+            <p><strong>Normal:</strong> {{ summary.normal_count }} | <strong>Abnormal:</strong> {{ summary.abnormal_count }}</p>
+            <div class="info-box">
+                <p><strong>WHO Normal Value:</strong> &lt;30% abnormal</p>
+                <p>If &gt;50% abnormal → low sperm quality</p>
+            </div>
+        </div>
+
+        <!-- Tombol -->
+        <a href="{{ url_for('upload_page') }}" class="btn" style="margin-top:1.5rem;">Detect Another Image</a>
+
+    {% else %}
+        <div style="text-align: center;">
+            <p style="color:red; font-size: 1.2rem;"><strong>Terjadi kesalahan atau tidak ada objek terdeteksi.</strong></p>
+            {% if summary.error %}
+                <p><em>{{ summary.error }}</em></p>
+            {% endif %}
+            <a href="{{ url_for('upload_page') }}" class="btn" style="max-width: 300px; margin: 1rem auto;">Coba Gambar Lain</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    let currentIndex = 0;
+    const images = document.querySelectorAll(".carousel-image");
+    const perImageBoxes = document.querySelectorAll(".per-image-analysis");
+
+    function showImage(index) {
+        if (images.length === 0) return;
+        images.forEach((img, i) => {
+            img.classList.toggle("active", i === index);
+        });
+        perImageBoxes.forEach((box, i) => {
+            box.classList.toggle("active", i === index);
+        });
+    }
+
+    function prevImage() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            showImage(currentIndex);
+        }
+    }
+
+    function nextImage() {
+        if (currentIndex < images.length - 1) {
+            currentIndex++;
+            showImage(currentIndex);
+        }
+    }
+</script>
+{% endblock %}

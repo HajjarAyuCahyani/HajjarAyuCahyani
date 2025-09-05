@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Upload Gambar</h2>
+    <p>Unggah gambar mikroskopis sperma untuk dideteksi (bisa lebih dari satu).</p>
+    
+    <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data" id="upload-form">
+        <input type="file" name="files" id="file-input" accept="image/*" multiple required>
+        
+        <div class="upload-area" id="upload-box">
+            <div class="upload-icon">⬆️</div>
+            <div class="upload-text" id="upload-text">Klik atau seret gambar ke sini</div>
+            <div class="upload-hint">Format: PNG, JPG, JPEG</div>
+        </div>
+        
+        <button type="submit" class="btn">DETECT</button>
+    </form>
+
+<script>
+    const uploadBox = document.getElementById('upload-box');
+    const fileInput = document.getElementById('file-input');
+    const uploadText = document.getElementById('upload-text');
+
+    uploadBox.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            let names = Array.from(fileInput.files).map(f => f.name).join(', ');
+            uploadText.textContent = names;
+        } else {
+            uploadText.textContent = 'Klik atau seret gambar ke sini';
+        }
+    });
+
+    uploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBox.style.borderColor = '#4A55A2';
+    });
+    uploadBox.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadBox.style.borderColor = '#cccccc';
+    });
+    uploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        let names = Array.from(fileInput.files).map(f => f.name).join(', ');
+        uploadText.textContent = names;
+    });
+</script>
+{% endblock %}

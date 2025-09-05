@@ -1,0 +1,294 @@
+/* Menggunakan Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    /* Properti yang mungkin sudah ada seperti background-color & font-family biarkan saja */
+    background-color: #618bcb;
+    font-family: 'Poppins', sans-serif;
+    
+    /* TAMBAHKAN ATAU PASTIKAN PROPERTI DI BAWAH INI ADA */
+    display: flex;
+    justify-content: center; /* Untuk center horizontal */
+    align-items: center;    /* Untuk center vertikal */
+    min-height: 100vh;      /* Agar body memenuhi tinggi layar */
+    margin: 0;              /* Menghapus margin default */
+}
+
+/* 1. Header Atas Halaman */
+.app-header {
+    background-color: #FFFFFF; /* Warna latar belakang header */
+    padding: 0 2rem;
+    height: 70px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+/* Logo dan Nama Merek */
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Menambahkan jarak antara logo dan teks */
+}
+
+.logo {
+    width: 50px; /* Ukuran logo */
+    height: auto;
+}
+
+/* Teks Header */
+.header-title {
+    font-family: 'Lobster', cursive; /* Menggunakan font Lobster */
+    font-weight: 600; /* Menyesuaikan ketebalan teks */
+    font-size: 1.8rem; /* Mengurangi ukuran font untuk header */
+    color: #FF6F61; /* Menggunakan warna yang sama dengan judul */
+    margin: 0; /* Menghapus margin */
+}
+
+/* Menu Navigasi */
+.nav-menu {
+    display: flex;
+    gap: 20px; /* Memberikan jarak antar item menu */
+}
+
+.nav-item {
+    font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
+    font-weight: 600; /* Menyesuaikan ketebalan font */
+    color: #333; /* Warna teks menu */
+    text-decoration: none; /* Menghapus garis bawah */
+    transition: color 0.3s; /* Animasi transisi */
+}
+
+.nav-item:hover {
+    color: #FF6F61; /* Mengubah warna saat hover */
+}
+
+
+/* Cari selector h1 yang sudah ada */
+h1 {
+    font-family: 'Lobster', cursive; /* TAMBAHKAN BARIS INI */
+    font-size: 1.8rem;
+    color: #4A55A2;
+    margin: 0;
+}
+
+.home-icon img {
+    width: 35px;
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+.home-icon img:hover {
+    transform: scale(1.1);
+}
+
+/* Kontainer Putih di Tengah */
+.main-container {
+    background-color: white;
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 700px; /* Sedikit lebih lebar untuk hasil */
+    margin: 2rem auto;
+}
+
+/* 2. Halaman Upload yang Ditingkatkan */
+.upload-area {
+    border: 3px dashed #cccccc;
+    border-radius: 1rem;
+    padding: 3rem 1rem;
+    margin: 2rem 0;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #4A55A2;
+    background-color: #f8f9fa;
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: #4A55A2;
+}
+
+.upload-text {
+    font-weight: 600;
+    color: #555;
+}
+
+.upload-hint {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Sembunyikan input file asli */
+#file-input {
+    display: none;
+}
+
+/* Tombol */
+.btn {
+    display: inline-block;
+    background-color: #FFA500;
+    color: black;
+    font-weight: bold;
+    border-radius: 0.75rem;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 80%;
+    margin-top: 1rem;
+    box-sizing: border-box;
+}
+
+.btn:hover {
+    background-color: #FFC107;
+}
+
+/* 3. Halaman Hasil Deteksi yang Ditingkatkan */
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    text-align: left;
+    margin-top: 2rem;
+}
+
+.result-grid img {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+}
+
+.analysis-box {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+progress {
+    width: 100%;
+    height: 25px;
+}
+
+/* === STYLING KHUSUS UNTUK HALAMAN WELCOME BARU (REVISI FINAL) === */
+
+.welcome-container {
+    background-color: white;
+    padding: 3rem 4rem; /* Menambah padding vertikal */
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 550px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Teks "Welcome to" */
+.welcome-text-top {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.2rem; /* Ukuran font disesuaikan */
+    color: #000000;
+    margin: 0;
+}
+
+/* Judul utama "MorphoSperm!" */
+.welcome-title {
+    font-family: 'Lobster', cursive;
+    font-weight: 400;
+    font-size: 2.8rem;
+    color: #4A55A2;
+    margin: 0.2rem 0 0.75rem; /* Spasi atas-bawah disesuaikan */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-logo {
+    height: 60px;
+    width: auto;
+    margin-right: 0px;
+}
+
+/* Teks "DETECT SPERM ABNORMALITY!" */
+.welcome-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 0.9rem; /* Ukuran font diperkecil agar selaras */
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 3rem; /* Spasi ke tombol diperbesar */
+    letter-spacing: 1px;
+}
+
+/* Tombol START DETECT */
+.welcome-btn {
+    width: 80%;
+    padding: 0.9rem 0; /* Padding vertikal disesuaikan */
+    font-size: 1.1rem;
+    font-weight: 700;
+    
+    /* Menambahkan Flexbox untuk center teks di dalam tombol */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* === STYLING UNTUK CAROUSEL HASIL DETEKSI === */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+}
+
+.carousel-slide {
+    display: none;
+    text-align: center;
+}
+
+.carousel-slide.active {
+    display: block;
+}
+
+.carousel-slide img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 18px;
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
+
+.prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.8);
+}
